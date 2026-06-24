@@ -139,9 +139,25 @@ The prototype is structured so real-time multiplayer can be added without rewrit
 
 ---
 
+## 🌍 Deployment
+
+The project deploys to **GitHub Pages** automatically. The
+[`deploy-pages`](.github/workflows/deploy-pages.yml) workflow builds the app and
+publishes `dist/` on every push to `main`, so the latest build is live at:
+
+```
+https://jobendik.github.io/DragonEggRun/
+```
+
+`vite.config.ts` uses `base: './'` (relative asset URLs), so the build also works
+unchanged from a project sub-path or any static host. The first deploy enables
+Pages (Source = _GitHub Actions_) via `actions/configure-pages`; if your org
+restricts that, enable it once under **Settings → Pages → Build and deployment →
+Source: GitHub Actions**.
+
 ## 🛠️ Tech stack
 
-Phaser 3 · TypeScript (strict) · Vite · ESLint + Prettier · GitHub Actions CI.
+Phaser 3 · TypeScript (strict) · Vite · ESLint + Prettier · GitHub Actions CI + Pages deploy.
 
 ## 📄 License
 
