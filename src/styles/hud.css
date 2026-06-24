@@ -1,0 +1,479 @@
+/* ============================================================= *
+ * In-match HUD: bars, timers, coins, status, radar, search prompt *
+ * ============================================================= */
+
+.hud {
+  position: absolute;
+  inset: 0;
+  padding: clamp(10px, 1.6vw, 18px);
+  transition: opacity 0.3s ease;
+}
+
+/* ----------------------------- top bar ----------------------------- */
+
+.hud-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hud-cluster {
+  display: flex;
+  gap: 10px;
+}
+
+.hud-left {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.hud-center {
+  flex: 0 0 auto;
+}
+
+.hud-right {
+  align-items: center;
+}
+
+.phase-pill {
+  pointer-events: none;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2a2008;
+  background: linear-gradient(90deg, var(--gold), var(--gold-2));
+  box-shadow: var(--shadow-soft);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.phase-pill--found {
+  color: #1a2c1a;
+  background: linear-gradient(90deg, #fff2b0, var(--gold));
+  animation: pillFlash 0.5s ease 3;
+}
+
+.phase-pill--escape {
+  color: #fff;
+  background: linear-gradient(90deg, var(--danger), #ff8a4d);
+  box-shadow: 0 0 22px rgba(255, 93, 93, 0.5);
+}
+
+.objective {
+  pointer-events: none;
+  padding: 7px 14px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  max-width: min(60vw, 360px);
+}
+
+/* ----------------------------- timers ------------------------------ */
+
+.timer {
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 20px;
+  border-radius: 14px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+}
+
+.timer-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.timer-value {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.timer-escape {
+  border-color: rgba(255, 120, 90, 0.4);
+  box-shadow: 0 0 20px rgba(255, 93, 93, 0.3);
+}
+
+.timer-escape .timer-label {
+  color: var(--danger);
+}
+
+.timer-escape .timer-value.is-urgent {
+  color: var(--danger);
+  animation: urgentPulse 0.8s ease infinite;
+}
+
+/* ------------------------------ coins ------------------------------ */
+
+.coins {
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 12px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  font-weight: 800;
+}
+
+.coin-icon {
+  font-size: 1.1rem;
+}
+
+.coin-value {
+  font-variant-numeric: tabular-nums;
+  min-width: 1.4em;
+  color: var(--gold);
+}
+
+.coin-value.is-pop {
+  animation: coinPop 0.35s ease;
+}
+
+/* ------------------------ carrier indicator ------------------------ */
+
+.carrier-indicator {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 209, 102, 0.5);
+  box-shadow: 0 0 24px rgba(255, 209, 102, 0.3);
+  font-size: 0.88rem;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.carrier-indicator--you {
+  border-color: rgba(76, 201, 240, 0.6);
+  box-shadow: 0 0 24px rgba(76, 201, 240, 0.35);
+}
+
+.carrier-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+  animation: urgentPulse 1s ease infinite;
+}
+
+.carrier-indicator--you .carrier-dot {
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+/* -------------------------- status effects ------------------------- */
+
+.status-effects {
+  position: absolute;
+  left: clamp(10px, 1.6vw, 18px);
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.status-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  animation: chipIn 0.2s ease;
+}
+
+.status-chip-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.status-chip-bar {
+  width: 46px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.status-chip-bar > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s linear;
+}
+
+.status-chip--speed .status-chip-bar > span {
+  background: var(--good);
+}
+.status-chip--shield .status-chip-bar > span {
+  background: var(--cyan);
+}
+.status-chip--slow .status-chip-bar > span {
+  background: var(--warn);
+}
+.status-chip--stun .status-chip-bar > span {
+  background: var(--danger);
+}
+
+/* ----------------------------- minimap ----------------------------- */
+
+.hud-minimap {
+  position: absolute;
+  right: clamp(10px, 1.6vw, 18px);
+  bottom: clamp(10px, 1.6vw, 18px);
+  padding: 10px 10px 8px;
+  border-radius: 16px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+  pointer-events: none;
+}
+
+.minimap-title {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+#minimap {
+  display: block;
+  border-radius: 8px;
+  background: rgba(8, 16, 12, 0.6);
+}
+
+/* --------------------------- search prompt ------------------------- */
+
+.search-prompt {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(20px, 5vh, 56px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+  animation: promptIn 0.2s ease;
+}
+
+.search-prompt:hover {
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.search-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: 7px;
+  background: var(--gold);
+  color: #2a2008;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.search-label {
+  font-size: 0.96rem;
+}
+
+.search-progress {
+  display: none;
+  width: 120px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.search-progress-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold), var(--good));
+}
+
+.search-prompt.is-searching .search-key {
+  display: none;
+}
+
+.search-prompt.is-searching .search-progress {
+  display: block;
+}
+
+/* --------------------------- touch controls ------------------------ */
+
+.touch-controls {
+  position: absolute;
+  inset: auto 0 0 0;
+  bottom: 0;
+  height: 0;
+}
+
+.joystick {
+  position: absolute;
+  left: clamp(16px, 5vw, 48px);
+  bottom: clamp(20px, 7vh, 60px);
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow);
+  touch-action: none;
+}
+
+.joystick-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, var(--gold), var(--gold-deep));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: transform 0.04s linear;
+}
+
+.action-btn {
+  position: absolute;
+  right: clamp(16px, 5vw, 48px);
+  bottom: clamp(28px, 9vh, 76px);
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: radial-gradient(circle at 35% 30%, #6cd3f0, var(--cyan));
+  color: #06283a;
+  font-size: 1.8rem;
+  box-shadow: 0 10px 26px rgba(76, 201, 240, 0.4);
+  touch-action: none;
+}
+
+.action-btn:active {
+  transform: scale(0.92);
+}
+
+/* ----------------------------- keyframes --------------------------- */
+
+@keyframes coinPop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.4);
+    color: #fff;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pillFlash {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.6);
+  }
+}
+
+@keyframes urgentPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.12);
+  }
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes promptIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}
+
+.carrier-indicator .carrier-dot {
+  flex: 0 0 auto;
+}
+
+/* Keep the urgent timer pulse honouring the centered transform. */
+.carrier-indicator {
+  will-change: opacity;
+}

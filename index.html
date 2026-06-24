@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0e1726" />
+    <meta
+      name="description"
+      content="Dragon Egg Run — a real-time fantasy treasure-hunt prototype built with Phaser 3, TypeScript and Vite."
+    />
+    <title>Dragon Egg Run</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Phaser mounts its canvas here; the UI is layered on top. -->
+      <div id="game-container" aria-hidden="true"></div>
+
+      <div id="ui-root">
+        <!-- ============================ MAIN MENU ============================ -->
+        <section id="main-menu" class="screen menu-screen">
+          <div class="menu-card">
+            <p class="menu-kicker">A real-time fantasy treasure hunt</p>
+            <h1 class="game-title">Dragon&nbsp;Egg<span class="title-run">Run</span></h1>
+            <p class="menu-tagline">
+              The last living Dragon Egg is hidden somewhere on the island. Search the ruins, beat
+              the rival adventurers to it — then run for the gates.
+            </p>
+
+            <button id="btn-start" class="btn btn-primary btn-large">Start Match</button>
+
+            <div class="menu-columns">
+              <div class="menu-panel">
+                <h2 class="panel-title">Controls</h2>
+                <ul class="control-list">
+                  <li><span class="key">W A S D</span> / <span class="key">↑ ← ↓ →</span> Move</li>
+                  <li><span class="key">E</span> / <span class="key">Space</span> Search nearby</li>
+                  <li><span class="key">Click</span> a glowing site to search it</li>
+                  <li><span class="key">Esc</span>-free — pause from the HUD button</li>
+                  <li>On touch: drag the joystick, tap the action button</li>
+                </ul>
+              </div>
+              <div class="menu-panel">
+                <h2 class="panel-title">How to win</h2>
+                <ul class="control-list">
+                  <li>🔎 Search sites for coins, buffs, traps &amp; hints</li>
+                  <li>🐉 One site hides the Dragon Egg</li>
+                  <li>🏃 Carry it to a glowing extraction gate</li>
+                  <li>🤝 Tackle the carrier to knock the egg loose</li>
+                  <li>⏳ Escape before the dragon reclaims it</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="menu-settings">
+              <label class="switch">
+                <input type="checkbox" id="toggle-sound" checked />
+                <span class="switch-track"><span class="switch-thumb"></span></span>
+                <span class="switch-label">Sound</span>
+              </label>
+              <span class="menu-hint">Tip: add <code>?seed=123</code> to the URL for a fixed map.</span>
+            </div>
+          </div>
+          <p class="menu-footer">Prototype · 1 human vs 8 AI adventurers · No real networking yet</p>
+        </section>
+
+        <!-- ============================== HUD =============================== -->
+        <div id="hud" class="hud is-hidden" aria-hidden="true">
+          <div class="hud-top">
+            <div class="hud-cluster hud-left">
+              <div id="hud-phase" class="phase-pill">Exploration</div>
+              <div id="hud-objective" class="objective">Find the Dragon Egg</div>
+            </div>
+
+            <div class="hud-cluster hud-center">
+              <div class="timer" id="match-timer-wrap">
+                <span class="timer-label">Match</span>
+                <span class="timer-value" id="match-timer">4:00</span>
+              </div>
+              <div class="timer timer-escape is-hidden" id="escape-timer-wrap">
+                <span class="timer-label">Escape</span>
+                <span class="timer-value" id="escape-timer">1:20</span>
+              </div>
+            </div>
+
+            <div class="hud-cluster hud-right">
+              <div class="coins">
+                <span class="coin-icon">🪙</span>
+                <span class="coin-value" id="hud-coins">0</span>
+              </div>
+              <button id="btn-pause" class="btn btn-icon" title="Pause" aria-label="Pause">⏸</button>
+            </div>
+          </div>
+
+          <div id="carrier-indicator" class="carrier-indicator is-hidden">
+            <span class="carrier-dot"></span>
+            <span class="carrier-text">Egg carrier: <strong id="carrier-name">—</strong></span>
+          </div>
+
+          <div id="status-effects" class="status-effects" aria-live="polite"></div>
+
+          <div class="hud-minimap">
+            <span class="minimap-title">Radar</span>
+            <canvas id="minimap" width="190" height="150"></canvas>
+          </div>
+
+          <button id="search-prompt" class="search-prompt is-hidden" type="button">
+            <span class="search-key">E</span>
+            <span class="search-label" id="search-prompt-label">Search Chest</span>
+            <span class="search-progress" id="search-progress">
+              <span class="search-progress-fill" id="search-progress-fill"></span>
+            </span>
+          </button>
+        </div>
+
+        <!-- ===================== PHASE BANNER / COUNTDOWN ==================== -->
+        <div id="phase-banner" class="phase-banner">
+          <div class="phase-banner-inner">
+            <h2 id="phase-banner-title" class="phase-banner-title"></h2>
+            <p id="phase-banner-sub" class="phase-banner-sub"></p>
+          </div>
+        </div>
+
+        <div id="countdown" class="countdown is-hidden">
+          <span id="countdown-value" class="countdown-value">3</span>
+        </div>
+
+        <!-- ========================= NOTIFICATIONS ========================== -->
+        <div id="notifications" class="notifications" aria-live="polite"></div>
+
+        <!-- =========================== TOUCH UI ============================= -->
+        <div id="touch-controls" class="touch-controls is-hidden">
+          <div id="joystick" class="joystick">
+            <div id="joystick-thumb" class="joystick-thumb"></div>
+          </div>
+          <button id="btn-action" class="action-btn" aria-label="Search">🔎</button>
+        </div>
+
+        <!-- =========================== PAUSE MENU =========================== -->
+        <section id="pause-menu" class="screen overlay-screen is-hidden">
+          <div class="dialog">
+            <h2 class="dialog-title">Paused</h2>
+            <div class="dialog-actions">
+              <button id="btn-resume" class="btn btn-primary">Resume</button>
+              <button id="btn-pause-restart" class="btn">Restart match</button>
+              <button id="btn-pause-menu" class="btn btn-ghost">Main menu</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================ END SCREEN ========================== -->
+        <section id="end-screen" class="screen overlay-screen is-hidden">
+          <div class="dialog end-dialog">
+            <div id="end-result-tag" class="result-tag">Victory</div>
+            <h2 id="end-title" class="dialog-title">You escaped!</h2>
+            <p id="end-summary" class="end-summary"></p>
+
+            <div class="end-stats">
+              <div class="end-stat">
+                <span class="end-stat-label">Match length</span>
+                <span class="end-stat-value" id="end-duration">0:00</span>
+              </div>
+              <div class="end-stat">
+                <span class="end-stat-label">Coins gathered</span>
+                <span class="end-stat-value" id="end-coins">0</span>
+              </div>
+            </div>
+
+            <div class="end-history">
+              <span class="end-stat-label">Egg carriers</span>
+              <ol id="end-carrier-list" class="carrier-list"></ol>
+            </div>
+
+            <div class="dialog-actions">
+              <button id="btn-play-again" class="btn btn-primary">Play again</button>
+              <button id="btn-end-menu" class="btn btn-ghost">Main menu</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

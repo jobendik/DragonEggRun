@@ -1,0 +1,35 @@
+{
+  "name": "dragon-egg-run",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Dragon Egg Run — a real-time, single-player-vs-AI fantasy treasure-hunt prototype built with Phaser 3, TypeScript and Vite.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,css,html,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,css,html,json,md}\""
+  },
+  "dependencies": {
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1",
+    "vite": "^6.0.5"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

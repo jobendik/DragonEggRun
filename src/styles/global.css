@@ -1,0 +1,361 @@
+/* ============================================================= *
+ * Dragon Egg Run — global theme, layout & shared components       *
+ * ============================================================= */
+
+:root {
+  --bg: #0c1622;
+  --bg-2: #0f2030;
+
+  --gold: #ffd166;
+  --gold-2: #f4b73d;
+  --gold-deep: #b9791f;
+  --cyan: #4cc9f0;
+  --danger: #ff5d5d;
+  --good: #6ee7a8;
+  --warn: #ffb84d;
+  --epic: #c0a3ff;
+
+  --ink: #eaf2f6;
+  --ink-soft: rgba(234, 242, 246, 0.72);
+  --ink-faint: rgba(234, 242, 246, 0.5);
+
+  --glass: linear-gradient(158deg, rgba(22, 36, 52, 0.82), rgba(10, 18, 28, 0.72));
+  --glass-soft: linear-gradient(158deg, rgba(28, 44, 62, 0.66), rgba(12, 20, 30, 0.56));
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-blur: blur(16px) saturate(1.2);
+
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --radius: 18px;
+  --radius-sm: 12px;
+
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --display: 'Georgia', 'Iowan Old Style', 'Palatino Linotype', serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: radial-gradient(120% 120% at 50% 0%, var(--bg-2), var(--bg));
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+#game-container {
+  position: absolute;
+  inset: 0;
+}
+
+#game-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* The UI overlay is transparent to pointer events by default so taps reach the
+   Phaser canvas (e.g. clicking a search site). Interactive bits opt back in. */
+#ui-root {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+#ui-root button,
+#ui-root input,
+.menu-screen,
+.overlay-screen,
+.search-prompt,
+.action-btn,
+.joystick,
+.switch {
+  pointer-events: auto;
+}
+
+/* --------------------------- utilities ----------------------------- */
+
+.is-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ----------------------------- buttons ----------------------------- */
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  color: var(--ink);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 0.72em 1.3em;
+  background: linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    filter 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.btn-primary {
+  color: #3a2607;
+  background: linear-gradient(160deg, var(--gold), var(--gold-2));
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 28px rgba(244, 183, 61, 0.34);
+}
+
+.btn-large {
+  font-size: 1.2rem;
+  padding: 0.9em 2.1em;
+  border-radius: 14px;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.btn-icon {
+  padding: 0.38em 0.62em;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+/* ---------------------- full-screen overlays ----------------------- */
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  transition:
+    opacity 0.35s ease,
+    visibility 0.35s ease;
+}
+
+.overlay-screen {
+  background: radial-gradient(120% 120% at 50% 30%, rgba(6, 12, 20, 0.55), rgba(4, 8, 14, 0.82));
+  backdrop-filter: blur(3px);
+}
+
+.dialog {
+  width: min(460px, 92vw);
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 30px 28px;
+  animation: dialogIn 0.4s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.dialog-title {
+  font-family: var(--display);
+  font-size: 2rem;
+  margin: 0 0 18px;
+  letter-spacing: 0.01em;
+}
+
+.dialog-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+/* --------------------------- phase banner -------------------------- */
+
+.phase-banner {
+  position: absolute;
+  top: 20%;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.phase-banner.is-shown {
+  opacity: 1;
+}
+
+.phase-banner-inner {
+  padding: 18px 34px;
+  border-radius: 20px;
+  background: var(--glass-soft);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow);
+}
+
+.phase-banner.is-shown .phase-banner-inner {
+  animation: bannerPop 0.6s cubic-bezier(0.18, 0.9, 0.2, 1);
+}
+
+.phase-banner-title {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 4.4vw, 2.8rem);
+  margin: 0;
+  line-height: 1.1;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.phase-banner-sub {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+}
+
+.phase-banner--info .phase-banner-title {
+  color: var(--gold);
+}
+
+.phase-banner--danger .phase-banner-title {
+  color: var(--danger);
+  text-shadow: 0 0 24px rgba(255, 93, 93, 0.6);
+}
+
+.phase-banner--epic .phase-banner-title {
+  background: linear-gradient(90deg, var(--gold), #fff3c4, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 30px rgba(255, 209, 102, 0.55);
+}
+
+.phase-banner--epic .phase-banner-inner {
+  border-color: rgba(255, 209, 102, 0.5);
+  box-shadow:
+    var(--shadow),
+    0 0 50px rgba(255, 209, 102, 0.25);
+}
+
+/* ---------------------------- countdown ---------------------------- */
+
+.countdown {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.countdown-value {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(5rem, 20vw, 13rem);
+  color: var(--gold);
+  text-shadow:
+    0 0 40px rgba(255, 209, 102, 0.6),
+    0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.countdown-value--go {
+  color: var(--good);
+  text-shadow:
+    0 0 50px rgba(110, 231, 168, 0.7),
+    0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.countdown-value.is-pop {
+  animation: countPop 0.55s ease;
+}
+
+/* --------------------- escape-phase global mood -------------------- */
+
+body.phase-escape .hud-top,
+body.phase-escape .search-prompt {
+  border-color: rgba(255, 120, 90, 0.4);
+}
+
+/* ----------------------------- keyframes --------------------------- */
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bannerPop {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.8);
+  }
+  60% {
+    transform: translateY(0) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes countPop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.05ms !important;
+  }
+}
