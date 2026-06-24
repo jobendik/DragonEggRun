@@ -1,0 +1,298 @@
+/* ============================================================= *
+ * Main menu, settings, pause dialog & end screen                  *
+ * ============================================================= */
+
+.menu-screen {
+  background: radial-gradient(130% 130% at 50% 8%, rgba(10, 22, 36, 0.4), rgba(5, 10, 18, 0.86));
+}
+
+.menu-card {
+  width: min(880px, 94vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: var(--glass);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 26px;
+  box-shadow: var(--shadow);
+  padding: clamp(22px, 4vw, 44px);
+  animation: dialogIn 0.5s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+
+.menu-kicker {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-size: 0.72rem;
+  color: var(--gold);
+  opacity: 0.85;
+}
+
+.game-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 8vw, 5rem);
+  line-height: 0.96;
+  letter-spacing: 0.01em;
+  background: linear-gradient(180deg, #fff7da 0%, var(--gold) 45%, var(--gold-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 26px rgba(255, 197, 84, 0.35));
+}
+
+.title-run {
+  display: block;
+  font-size: 0.62em;
+  letter-spacing: 0.42em;
+  margin-top: 2px;
+  background: linear-gradient(90deg, var(--cyan), #9fe9ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 18px rgba(76, 201, 240, 0.4));
+}
+
+.menu-tagline {
+  max-width: 620px;
+  margin: 16px auto 24px;
+  color: var(--ink-soft);
+  font-size: clamp(0.92rem, 2vw, 1.08rem);
+  line-height: 1.55;
+}
+
+.menu-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 28px 0 18px;
+  text-align: left;
+}
+
+.menu-panel {
+  background: var(--glass-soft);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+}
+
+.panel-title {
+  margin: 0 0 12px;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.control-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+.key {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 2px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.menu-settings {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-hint {
+  color: var(--ink-faint);
+  font-size: 0.82rem;
+}
+
+.menu-hint code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.menu-footer {
+  margin-top: 18px;
+  color: var(--ink-faint);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* ----------------------------- switch ------------------------------ */
+
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-track {
+  width: 46px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform 0.2s ease;
+}
+
+.switch input:checked + .switch-track {
+  background: linear-gradient(90deg, var(--gold-deep), var(--gold));
+}
+
+.switch input:checked + .switch-track .switch-thumb {
+  transform: translateX(20px);
+  background: #3a2607;
+}
+
+.switch-label {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------- end screen --------------------------- */
+
+.end-dialog {
+  width: min(500px, 94vw);
+  text-align: center;
+}
+
+.result-tag {
+  display: inline-block;
+  padding: 5px 16px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.result-tag--victory {
+  color: #0b3322;
+  background: linear-gradient(90deg, var(--good), #b8ffd9);
+  box-shadow: 0 0 26px rgba(110, 231, 168, 0.4);
+}
+
+.result-tag--defeat {
+  color: #3a0d0d;
+  background: linear-gradient(90deg, var(--danger), #ff9d9d);
+  box-shadow: 0 0 26px rgba(255, 93, 93, 0.4);
+}
+
+.end-summary {
+  margin: 0 0 22px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.end-stats {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.end-stat {
+  flex: 1;
+  background: var(--glass-soft);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+
+.end-stat-label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 6px;
+}
+
+.end-stat-value {
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.end-history {
+  text-align: left;
+  margin-bottom: 6px;
+}
+
+.carrier-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 148px;
+  overflow-y: auto;
+}
+
+.carrier-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.9rem;
+}
+
+.carrier-who.is-you {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+.carrier-when {
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.carrier-list-empty {
+  justify-content: center;
+  color: var(--ink-faint);
+}
